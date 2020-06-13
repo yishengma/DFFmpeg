@@ -184,9 +184,44 @@ echo "build ffmpeg finished"
 
 ```
 
+#### mac 本地流媒体服务器
+1. 下载nginx
+```
+brew tap denji/homebrew-nginx
 
+```
+2. 安装 nginx
+```
+brew install nginx-full --with-rtmp-module
 
+```
+3.查看 nginx 目录
+```
+brew info nginx-full
 
+```
+4.找到nginx.conf文件所在位置 ,添加 
+```
+rtmp {
+    server {
+        listen 1935;
+        application rtmplive {
+            live on;
+            record off;
+        }
+    }
+}
+```
+5.启动
+```
+nginx
+```
+6.推流
+```
+ffmpeg -re -i /Users/mayisheng/mayisheng/test.mp4  -vcodec libx264 -acodec aac -strict -2 -f flv rtmp://localhost:1935/rtmplive/room
+#如果报Unknown encoder 'libx264'，确保安装了libx264 到 ，ffmpeg 目录执行下命令 
+#./ffmpeg -re -i a.mp4 -vcodec libx264 -acodec aac -f flv rtmp://172.31.102.165:1935/myapp 
+```
 
 
 
